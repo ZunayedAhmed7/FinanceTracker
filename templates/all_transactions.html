@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}All Transactions{% endblock %}
+
+{% block content %}
+
+<style>
+    /* Centering and Layout */
+    .transactions-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+    }
+
+    /* Table Styles */
+    .transactions-table-container {
+        width: 80%;
+        margin-top: 20px;
+    }
+
+    .transactions-table-container table {
+        width: 100%;
+        border-collapse: collapse;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .transactions-table-container th, 
+    .transactions-table-container td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .transactions-table-container th {
+        background-color: #f0f0f0;
+        font-weight: bold;
+    }
+
+    .transactions-table-container tr:hover {
+        background-color: #f9f9f9;
+    }
+</style>
+
+<div class="transactions-container">
+    <h1>All Transactions</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Date</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for transaction in transactions %}
+        <tr>
+            <td>{{ transaction.category }}</td>
+            <td>${{ transaction.price }}</td>
+            <td>{{ transaction.timestamp }}</td>
+            <td>
+                <form action="{{ url_for('delete_transaction', transaction_id=transaction.id) }}" method="POST" style="display: inline;">
+                    <button type="submit" class="btn-delete">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% else %}
+        <tr>
+            <td colspan="4">No transactions found.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

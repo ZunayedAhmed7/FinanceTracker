@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<h1>Register</h1>
+<form method="POST" onsubmit="return validatePassword()">
+    <label for="username">Username:</label>
+    <input type="text" id="username" name="username" required>
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" name="email" required>
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" name="password" required>
+    <small id="passwordHelp" class="form-text text-muted">
+        Password must be at least 8 characters long and include:
+        <ul>
+            <li>At least one uppercase letter</li>
+            <li>At least one number</li>
+            <li>At least one special character (e.g., !@#$%^&*)</li>
+        </ul>
+    </small>
+
+    <label for="confirm_password">Confirm Password:</label>
+    <input type="password" id="confirm_password" name="confirm_password" required>
+
+    <button type="submit">Register</button>
+</form>
+
+<script>
+    function validatePassword() {
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirm_password').value;
+
+        // Password requirements
+        const minLength = 8;
+        const hasUppercase = /[A-Z]/.test(password);
+        const hasNumber = /[0-9]/.test(password);
+        const hasSpecialChar = /[!@#$%^&*]/.test(password);
+
+        // Check if password meets requirements
+        if (password.length < minLength || !hasUppercase || !hasNumber || !hasSpecialChar) {
+            alert('Password must be at least 8 characters long and include an uppercase letter, a number, and a special character.');
+            return false;
+        }
+
+        // Check if passwords match
+        if (password !== confirmPassword) {
+            alert('Passwords do not match.');
+            return false;
+        }
+
+        return true;
+    }
+</script>
+{% endblock %}

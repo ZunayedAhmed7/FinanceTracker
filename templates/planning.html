@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+
+{% block title %}Planning{% endblock %}
+
+{% block content %}
+<style>
+    /* Centering and Layout */
+    .planning-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+    }
+
+    /* Form Styles */
+    .planning-container form {
+        width: 400px;
+        background: #ffffff;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .planning-container form label {
+        font-weight: bold;
+        margin-bottom: 5px;
+        text-align: left;
+        width: 100%;
+    }
+
+    .planning-container form input,
+    .planning-container form select {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        background-color: #ffffff;
+        color: #000000;
+    }
+
+    .planning-container form button {
+        padding: 10px 20px;
+        background-color: #075414;
+        color: #ffffff;
+        border: none;
+        cursor: pointer;
+        border-radius: 8px;
+        transition: background 0.3s ease;
+    }
+
+    .planning-container form button:hover {
+        background-color: #333333;
+    }
+
+    /* Budget and Transactions Table */
+    .budget-table-container {
+        width: 60%;
+        margin-top: 20px;
+    }
+
+    .budget-table-container table {
+        width: 100%;
+        border-collapse: collapse;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .budget-table-container th, 
+    .budget-table-container td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .budget-table-container th {
+        background-color: #f0f0f0;
+        font-weight: bold;
+    }
+
+    .budget-table-container tr:hover {
+        background-color: #f9f9f9;
+    }
+</style>
+
+<div class="planning-container">
+    <h1>Budget Planning</h1>
+    
+    <!-- Month Selector -->
+    <div class="month-selector">
+        <label for="month">Select Month:</label>
+        <input type="month" id="monthSelector" name="month" value="{{ selected_month }}">
+    </div>
+    
+    <!-- Budget Form -->
+    <form method="POST" action="{{ url_for('planning') }}">
+        <input type="hidden" name="month" value="{{ selected_month }}">
+        
+        <label for="category">Category:</label>
+        <select name="category">
+            {% for category in categories %}
+            <option value="{{ category }}">{{ category }}</option>
+            {% endfor %}
+        </select>
+        
+        <label for="amount">Budget Amount:</label>
+        <input type="number" name="amount" required>
+    
+        <button type="submit">Set Budget</button>
+    </form>
+
+    <!-- Budget Display Table -->
+    <div class="budget-table-container">
+        <h2>Budgets for {{ selected_month }}</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for category, amount in budgets.items() %}
+                    <tr>
+                        <td>{{ category }}</td>
+                        <td>${{ amount }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="2">No budgets set yet.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Transactions Display Table -->
+    <div class="budget-table-container">
+        <h2>Transactions for {{ selected_month }}</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for transaction in transactions %}
+                    <tr>
+                        <td>{{ transaction.category }}</td>
+                        <td>${{ transaction.price }}</td>
+                        <td>{{ transaction.timestamp }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="3">No transactions found.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- JavaScript for Automatic Filtering -->
+<script>
+    document.getElementById('monthSelector').addEventListener('change', function() {
+        const selectedMonth = this.value;
+        window.location.href = `{{ url_for('planning') }}?month=${selectedMonth}`;
+    });
+</script>
+
+{% endblock %}
